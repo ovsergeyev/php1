@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./style.css">
+    <title>Document</title>
+</head>
+<body>
+    {SLIDER}
+    <form action="index.php" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept="image/jpeg, image/png">
+        <button type="submit">Отправить</button>
+    </form>
+    <script src="./js/jquery.js"></script>
+    <script src="./js/slick.min.js"></script>
+    <script>
+        $('.slider').slick(
+          {
+            arrows: true,
+            dots: true,
+            slidesToShow: 3,
+            slidesToScroll: 1
+          }
+        );
+    </script>
+</body>
+</html>
