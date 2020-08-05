@@ -12,5 +12,7 @@
 
 <ul>
     <li><a href="/">Главная</a></li>
+    <li><a href="/news/">Новости</a></li>
+    <li><a href="/employees/">Сотрудники</a></li>
     <li><a href="/gallery/">Галлерея</a></li>
 </ul>

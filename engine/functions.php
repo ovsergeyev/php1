@@ -84,9 +84,23 @@ function prepareVariables($page_name){
             $vars["title"] = "Главная";
             break;
         case "gallery":
-            load_img('./img/slides/');
             $vars["title"] = "Галлерея";
             $vars["slider"] = getSlider("./img/slides");
+            break;
+        case "news":
+            $vars["title"] = "Новости";
+            $vars["newsfeed"] = getNews();
+            $vars["test"] = 123;
+            break;
+        case "newspage":
+            $content = getNewsContent($_GET['id_news']);
+            $vars["title"] = "Новость | " . $content["news_title"];
+            $vars["news_title"] = $content["news_title"];
+            $vars["news_content"] = $content["news_content"];
+            break;
+        case "employees":
+            $vars["userlist"] = getEmployees();
+            $vars["title"] = "Список сотрудников";
             break;
     }
 
@@ -103,6 +117,33 @@ function getSlider($slides_dir){
         $result .= "<a target='_blank' href='../img/slides/{$slide}' class='slider__element'><img src='../{$slides_dir}/{$slide}'/></a>";
     }
     return $result . "</div>";
+}
+
+function getNews(){
+    $sql = "select * from news";
+    $news = getAssocResult($sql);
+
+    return $news;
+}
+
+function getNewsContent($id_news){
+    $id_news = (int)$id_news;
+
+    $sql = "SELECT * FROM news WHERE id_news = ".$id_news;
+    $news = getAssocResult($sql);
+
+    $result = [];
+    if(isset($news[0]))
+        $result = $news[0];
+
+    return $result;
+}
+
+function getEmployees(){
+    $sql = 'SELECT * FROM employee';
+    $list = getAssocResult($sql);
+
+    return $list;
 }
 
 function load_img($load_path){
