@@ -38,19 +38,70 @@ function renderPage($page_name, $variables = [])
 
     // если переменных для подстановки не указано, просто
     // возвращаем шаблон как есть
-    if (empty($variables)) {
-      	foreach ($variables as $key => $value) {
-              if ($value != null) {
-    	        // собираем ключи
-              $key = '{{' . strtoupper($key) . '}}';
-
-          		// заменяем ключи на значения в теле шаблона
-          		$templateContent = str_replace($key, $value, $templateContent);
-	            }
-         }
+    if (!empty($variables)) {
+        // заполняем значениями
+        $templateContent = pasteValues($variables, $page_name, $templateContent);
     }
 
     return $templateContent;
+}
+
+function pasteValues($variables, $page_name, $templateContent){
+    foreach ($variables as $key => $value) {
+        if ($value != null) {
+            // собираем ключи
+            $p_key = '{{' . strtoupper($key) . '}}';
+
+            if(is_array($value)){
+                // замена массивом
+                $result = "";
+                foreach ($value as $value_key => $item){
+                    $itemTemplateContent = file_get_contents(TPL_DIR . "/" . $page_name ."_".$key."_item.tpl");
+
+                    foreach($item as $item_key => $item_value){
+                        $i_key = '{{' . strtoupper($item_key) . '}}';
+
+                        $itemTemplateContent = str_replace($i_key, $item_value, $itemTemplateContent);
+                    }
+
+                    $result .= $itemTemplateContent;
+                }
+            }
+            else
+                $result = $value;
+
+            $templateContent = str_replace($p_key, $result, $templateContent);
+        }
+    }
+
+    return $templateContent;
+}
+
+function prepareVariables($page_name){
+    $vars = [];
+    switch ($page_name){
+        case "index":
+            $vars["title"] = "Главная";
+            break;
+        case "gallery":
+            $vars["title"] = "Галлерея";
+            $vars["slider"] = getSlider("./img/slides");
+            break;
+    }
+
+    return $vars;
+}
+
+function getSlider($slides_dir){
+    $result = "<div class='slider'>";
+    $slides = scandir($slides_dir);
+    foreach($slides as $slide){
+        if($slide == '.' || $slide == '..'){
+            continue;
+        }
+        $result .= "<a target='_blank' href='../img/slides/{$slide}' class='slider__element'><img src='../{$slides_dir}/{$slide}'/></a>";
+    }
+    return $result . "</div>";
 }
 
 function _log($s, $suffix='')

@@ -11,4 +11,5 @@
 
 <ul>
     <li><a href="/">Главная</a></li>
+    <li><a href="/gallery/">Галлерея</a></li>
 </ul>

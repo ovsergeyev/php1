@@ -8,4 +8,6 @@ if($url_array[1] == "")
 else
     $page_name = $url_array[1];
 
-echo renderPage($page_name);
+$variables = prepareVariables($page_name);
+
+echo renderPage($page_name, $variables);
