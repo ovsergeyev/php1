@@ -10,6 +10,9 @@ define('ERROR_TEMPLATE_EMPTY', 2);
 function renderPage($page_name, $variables = [])
 {
     $file = TPL_DIR . "/" . $page_name . ".tpl";
+    $header = TPL_DIR . "/header.tpl";
+    $footer = TPL_DIR . "/footer.tpl";
+
     if (!is_file($file)) {
       	echo 'Template file "' . $file . '" not found';
       	exit(ERROR_NOT_FOUND);
@@ -20,12 +23,22 @@ function renderPage($page_name, $variables = [])
       	exit(ERROR_TEMPLATE_EMPTY);
     }
 
+    //Подключение header и footer если заданы их шаблоны
+    if(is_file($header)){
+        $templateContent = file_get_contents($header) . PHP_EOL . file_get_contents($file);
+    } else {
+        $templateContent = file_get_contents($file);
+    }
+
+    if(is_file($footer)){
+        $templateContent = $templateContent . PHP_EOL . file_get_contents($footer);
+    } else {
+        $templateContent = $templateContent;
+    }
+
     // если переменных для подстановки не указано, просто
     // возвращаем шаблон как есть
     if (empty($variables)) {
-	      $templateContent = file_get_contents($file);
-    } else {
-      	$templateContent = file_get_contents($file);
       	foreach ($variables as $key => $value) {
               if ($value != null) {
     	        // собираем ключи
