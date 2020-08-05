@@ -7,8 +7,9 @@ define('ERROR_TEMPLATE_EMPTY', 2);
 /*
 * Обрабатывает указанный шаблон, подставляя нужные переменные
 */
-function render($file, $variables = [])
+function renderPage($page_name, $variables = [])
 {
+    $file = TPL_DIR . "/" . $page_name . ".tpl";
     if (!is_file($file)) {
       	echo 'Template file "' . $file . '" not found';
       	exit(ERROR_NOT_FOUND);
@@ -104,6 +105,4 @@ return true;
             }
             return $root;
         }
-?>
-
 ?>
