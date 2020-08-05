@@ -84,6 +84,7 @@ function prepareVariables($page_name){
             $vars["title"] = "Главная";
             break;
         case "gallery":
+            load_img('./img/slides/');
             $vars["title"] = "Галлерея";
             $vars["slider"] = getSlider("./img/slides");
             break;
@@ -102,6 +103,65 @@ function getSlider($slides_dir){
         $result .= "<a target='_blank' href='../img/slides/{$slide}' class='slider__element'><img src='../{$slides_dir}/{$slide}'/></a>";
     }
     return $result . "</div>";
+}
+
+function load_img($load_path){
+    $img_types = ['image/jpeg', 'image/png'];
+    if($_FILES['file']){
+        $file = $_FILES['file'];
+        if(!in_array($file['type'], $img_types)){
+            return false;
+        }
+        $path_src = $_FILES['file']['tmp_name'];
+        //Проверка на размер изображения
+        $img_width = getimagesize($path_src)[0];
+        $img_height = getimagesize($path_src)[1];
+        if($img_width < 150 || $img_height < 150){
+            echo "<h2 style='color:red'>Изображение не подходит по размерам</h2>";
+            return false;
+        }
+        $name = translit($file['name']);
+        copy($path_src, $load_path . $name);
+    }
+}
+
+function translit($string){
+    $result = '';
+
+    $chars_array = [
+        'а' => 'a',   'б' => 'b',   'в' => 'v',
+        'г' => 'g',   'д' => 'd',   'е' => 'e',
+        'ё' => 'e',   'ж' => 'zh',  'з' => 'z',
+        'и' => 'i',   'й' => 'y',   'к' => 'k',
+        'л' => 'l',   'м' => 'm',   'н' => 'n',
+        'о' => 'o',   'п' => 'p',   'р' => 'r',
+        'с' => 's',   'т' => 't',   'у' => 'u',
+        'ф' => 'f',   'х' => 'h',   'ц' => 'c',
+        'ч' => 'ch',  'ш' => 'sh',  'щ' => 'sch',
+        'ь' => '\'',  'ы' => 'y',   'ъ' => '\'',
+        'э' => 'e',   'ю' => 'yu',  'я' => 'ya',
+
+        'А' => 'A',   'Б' => 'B',   'В' => 'V',
+        'Г' => 'G',   'Д' => 'D',   'Е' => 'E',
+        'Ё' => 'E',   'Ж' => 'Zh',  'З' => 'Z',
+        'И' => 'I',   'Й' => 'Y',   'К' => 'K',
+        'Л' => 'L',   'М' => 'M',   'Н' => 'N',
+        'О' => 'O',   'П' => 'P',   'Р' => 'R',
+        'С' => 'S',   'Т' => 'T',   'У' => 'U',
+        'Ф' => 'F',   'Х' => 'H',   'Ц' => 'C',
+        'Ч' => 'Ch',  'Ш' => 'Sh',  'Щ' => 'Sch',
+        'Ь' => '\'',  'Ы' => 'Y',   'Ъ' => '\'',
+        'Э' => 'E',   'Ю' => 'Yu',  'Я' => 'Ya',
+    ];
+
+    for($i = 0; $i < mb_strlen($string); $i++){
+        $char = mb_substr($string, $i, 1);
+        if(!empty($chars_array[$char])){
+            $char = $chars_array[$char];
+        }
+        $result .= $char;
+    }
+    return $result;
 }
 
 function _log($s, $suffix='')
