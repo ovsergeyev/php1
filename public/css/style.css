@@ -8,7 +8,10 @@ body {
 
 .slider.slick-slider {
     position: relative;
-    padding: 0 50px;
+    padding: 0 25px;
+    width: 375px;
+    background-color: #eee;
+    margin-bottom: 20px;
 }
 
 .slider .slick-list {
@@ -22,12 +25,16 @@ body {
 
 .slider .slick-slide {
     text-align: center;
+    font-size: 0;
 }
 
 .slider .slick-slide img {
     max-width: 100%;
-    width: 400px;
-    height: 270px;
+    /*width: 400px;*/
+    /*height: 270px;*/
+    width: 100px;
+    height: auto;
+    min-height: 75px;
     cursor: move;
 }
 
@@ -44,12 +51,12 @@ body {
 
 .slider .slick-arrow.slick-prev {
     left: 0;
-    background: url("img/sl-arrow_l.svg") 0 0/100% no-repeat;
+    background: url("../img/sl-arrow_l.svg") 10px 20px/50% no-repeat;
 }
 
 .slider .slick-arrow.slick-next {
     right: 0;
-    background: url("img/sl-arrow_r.svg") 0 0/100% no-repeat;
+    background: url("../img/sl-arrow_r.svg") 5px 20px/50% no-repeat;
 }
 
 .slider .slick-arrow.slick-disabled {

@@ -84,8 +84,13 @@ function prepareVariables($page_name){
             $vars["title"] = "Главная";
             break;
         case "gallery":
+            load_img('./img/slides/');
             $vars["title"] = "Галлерея";
-            $vars["slider"] = getSlider("./img/slides");
+            $vars["slider"] = getSlider();
+            break;
+        case "slide":
+            $vars["title"] = "Полное изображение";
+            $vars["slide"] = getSlide();
             break;
         case "news":
             $vars["title"] = "Новости";
@@ -107,16 +112,36 @@ function prepareVariables($page_name){
     return $vars;
 }
 
-function getSlider($slides_dir){
+function getSlider(){
     $result = "<div class='slider'>";
-    $slides = scandir($slides_dir);
-    foreach($slides as $slide){
-        if($slide == '.' || $slide == '..'){
+    $sql = "SELECT `id_image`, `full_path` FROM gallery ORDER BY `views` DESC";
+    $slides = getAssocResult($sql);
+    foreach($slides as $value){
+        $full_path = $value["full_path"];
+        $id = $value["id_image"];
+        $small_path = getPreviewPath($full_path);
+        if($full_path == '.' || $full_path == '..'){
             continue;
         }
-        $result .= "<a target='_blank' href='../img/slides/{$slide}' class='slider__element'><img src='../{$slides_dir}/{$slide}'/></a>";
+        $result .= "<a target='_blank' href='/slide/?id={$id}' class='slider__element'><img src='../{$small_path}'/></a>";
     }
     return $result . "</div>";
+}
+
+function getSlide(){
+    $id = $_GET["id"];
+    $sql = "UPDATE `gallery` SET `views` = `views` + 1 WHERE `id_image` = $id";
+    executeQuery($sql);
+    $sql = "SELECT `full_path`, `name`, `views` FROM gallery WHERE `id_image`=$id";
+    $response = getAssocResult($sql);
+    $full_path = $response[0]["full_path"];
+    $name = $response[0]["name"];
+    $views = $response[0]["views"];
+    if($name == "") $name = "Без названия";
+    $result = "<h1>$name</h1><br/>";
+    $result .= "Количество просмотров: $views. <br /><br />";
+    $result .= "<img src='../{$full_path}'></img>";
+    return $result;
 }
 
 function getNews(){
@@ -146,6 +171,14 @@ function getEmployees(){
     return $list;
 }
 
+function getPreviewPath($full_path){
+    $input_image_array = explode('/', $full_path);
+    $input_image_name = array_pop($input_image_array);
+    list($input_image_name, $image_ext) = explode(".", $input_image_name);
+    $result = "./img/previews/" . $input_image_name . "_preview" . "." . $image_ext;
+    return $result;
+}
+
 function load_img($load_path){
     $img_types = ['image/jpeg', 'image/png'];
     if($_FILES['file']){
@@ -162,8 +195,48 @@ function load_img($load_path){
             return false;
         }
         $name = translit($file['name']);
-        copy($path_src, $load_path . $name);
+
+        if(isset($_POST['name'])){
+            $custom_name = $_POST['name'];
+        } else {
+            $custom_name = '';
+        }
+
+        $full_path = $load_path . $name;
+        copy($path_src, $full_path);
+        $sql = "INSERT INTO `gallery` (`full_path`, `name`, `width`, `height`) VALUES ('{$full_path}', '{$custom_name}', $img_width, $img_height)";
+        executeQuery($sql);
+        resize($full_path, 150);
     }
+}
+
+function resize($image, $width_output = false, $height_output = false){
+    if(($width_output < 0) || ($height_output < 0)){
+        echo "Некорректные входные параметры";
+        return false;
+    }
+
+    list($width_input, $height_input, $type) = getimagesize($image);
+    $types = array("", "gif", "jpeg", "png");
+    $ext = $types[$type];
+
+    $ouput_image_name = getPreviewPath($image);
+
+    if($ext){
+        $func = 'imagecreatefrom' . $ext;
+        $img_input = $func($image);
+    } else {
+        echo "Некорректное изображение";
+        return false;
+    }
+    /* Пропорциональная подстановка второго параметра */
+    if(!$height_output) $height_output = $width_output / ($width_input / $height_input);
+    if(!$width_output) $width_output = $height_output / ($height_input / $width_input);
+
+    $img_output = imagecreatetruecolor($width_output, $height_output);
+    imagecopyresampled($img_output, $img_input, 0, 0, 0, 0, $width_output, $height_output, $width_input, $height_input);
+    $func = 'image'.$ext;
+    return $func($img_output, $ouput_image_name);
 }
 
 function translit($string){
