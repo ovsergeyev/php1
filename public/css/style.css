@@ -113,3 +113,24 @@ body {
 .calc button.active {
     border: 2px solid green;
 }
+
+.goods {
+    display: flex;
+    margin-bottom: 30px;
+}
+
+.goods__item {
+    width: 25%;
+}
+
+.goods__img img {
+    width: 100%;
+}
+
+.goods_form {
+    width: 450px;
+}
+
+.goods_form input {
+    margin-bottom: 15px;
+}

@@ -11,6 +11,7 @@ define('DB', 'trialdb');
 define('DATA_DIR', SITE_ROOT . '/data');
 define('LIB_DIR', SITE_ROOT . '/engine');
 define('TPL_DIR', SITE_ROOT . '/templates');
+define('GOODS_DIR', SITE_ROOT . 'img/goods_img');
 
 define('SITE_TITLE', 'Урок 4');
 

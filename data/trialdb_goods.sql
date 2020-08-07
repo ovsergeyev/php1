@@ -18,32 +18,31 @@ USE `trialdb`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `gallery`
+-- Table structure for table `goods`
 --
 
-DROP TABLE IF EXISTS `gallery`;
+DROP TABLE IF EXISTS `goods`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `gallery` (
-  `id_image` int(11) NOT NULL AUTO_INCREMENT,
-  `full_path` varchar(255) NOT NULL,
+CREATE TABLE `goods` (
+  `id_good` int(11) NOT NULL AUTO_INCREMENT,
+  `img_name` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `width` int(11) NOT NULL,
-  `height` int(11) NOT NULL,
-  `views` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_image`),
-  UNIQUE KEY `full_path_UNIQUE` (`full_path`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
+  `description` varchar(255) NOT NULL,
+  `price` int(11) NOT NULL,
+  PRIMARY KEY (`id_good`),
+  UNIQUE KEY `img_name_UNIQUE` (`img_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `gallery`
+-- Dumping data for table `goods`
 --
 
-LOCK TABLES `gallery` WRITE;
-/*!40000 ALTER TABLE `gallery` DISABLE KEYS */;
-INSERT INTO `gallery` VALUES (1,'./img/slides/01-big.jpg','',800,533,6),(2,'./img/slides/02-big.jpg','',800,600,9),(3,'./img/slides/03-big.jpg','',800,600,11),(7,'./img/slides/04-big.jpg','',800,600,0),(9,'./img/slides/05-big.jpg','проверка',800,600,4);
-/*!40000 ALTER TABLE `gallery` ENABLE KEYS */;
+LOCK TABLES `goods` WRITE;
+/*!40000 ALTER TABLE `goods` DISABLE KEYS */;
+INSERT INTO `goods` VALUES (1,'tovar_1.jpg','Первый товар','Описание первого товара',1000),(2,'tovar_2.jpg','Второй товар','Описание второго товара',1200),(3,'tovar_3.jpg','Третий товар','Описание третьего товара',1250);
+/*!40000 ALTER TABLE `goods` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -55,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-08-07 14:00:32
+-- Dump completed on 2020-08-07 14:00:31

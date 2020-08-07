@@ -130,6 +130,12 @@ function prepareVariables($page_name){
             }
             $vars["feed"] = getFeedback();
             break;
+        case "goods":
+            if(isset($_POST['name'])){
+                addGoods();
+            }
+            $vars["title"] = "Каталог товаров";
+            $vars["catalog"] = getGoods();
     }
 
     return $vars;
@@ -292,6 +298,43 @@ function getFeedback(){
     $sql = "SELECT `feedback_user`, `feedback_body` FROM `feedback`";
     $result = getAssocResult($sql);
     if(empty($result)) $result = " ";
+    return $result;
+}
+
+function addGoods(){
+    $name = prepareString($_POST['name']);
+    $desc = prepareString($_POST['desc']);
+    $price = (int)$_POST['price'];
+    $image_name = prepareString($_FILES['image_name']['name']);
+    $image_tmp_path = $_FILES['image_name']['tmp_name'];
+    $image_full_path = 'public/' . GOODS_DIR . '/' . $image_name;
+    copy($image_tmp_path, $image_full_path);
+    $sql = "INSERT INTO `goods` (`img_name`, `name`, `description`, `price`) VALUES ('$image_name', '$name', '$desc', $price)";
+    executeQuery($sql);
+}
+
+function getGoods(){
+    $result = "";
+    $sql = "SELECT `img_name`, `name`, `description`, `price` FROM `goods`";
+    $request = getAssocResult($sql);
+    forEach($request as $item){
+        $img_path = GOODS_DIR . '/' . $item['img_name'];
+        $name = $item['name'];
+        $desc = $item['description'];
+        $price = $item['price'];
+
+        $str = "<div class='goods__item'>
+                    <h2>$name</h2>
+                    <div class='goods__img'>
+                        <img src='$img_path' alt='$name'>
+                    </div>
+                    <h3>Описание:</h3>
+                    <p>$desc</p>
+                    <h3>Цена:</h3>
+                    <p>$price рублей</p>
+                </div>";
+        $result .= $str;
+    }
     return $result;
 }
 
