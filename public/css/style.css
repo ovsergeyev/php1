@@ -104,3 +104,12 @@ body {
 .calc input[type='submit'] {
     width: 300px;
 }
+
+.calc button {
+    width: 149px;
+    margin-bottom: 15px;
+}
+
+.calc button.active {
+    border: 2px solid green;
+}

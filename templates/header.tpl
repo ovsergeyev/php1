@@ -16,4 +16,5 @@
     <li><a href="/employees/">Сотрудники</a></li>
     <li><a href="/gallery/">Галлерея</a></li>
     <li><a href="/calc/">Калькулятор</a></li>
+    <li><a href="/calc2/">Калькулятор 2</a></li>
 </ul>

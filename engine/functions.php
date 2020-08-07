@@ -114,6 +114,13 @@ function prepareVariables($page_name){
                 $vars["result"] = "Результат " . $result;
             }
             $vars["title"] = "Калькулятор";
+        case "calc2":
+            $result = calc();
+            $vars["result"] = " ";
+            if($result){
+                $vars["result"] = "Результат " . $result;
+            }
+            $vars["title"] = "Калькулятор2";
     }
 
     return $vars;
