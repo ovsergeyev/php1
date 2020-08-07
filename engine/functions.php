@@ -107,6 +107,13 @@ function prepareVariables($page_name){
             $vars["userlist"] = getEmployees();
             $vars["title"] = "Список сотрудников";
             break;
+        case "calc":
+            $result = calc();
+            $vars["result"] = " ";
+            if($result){
+                $vars["result"] = "Результат " . $result;
+            }
+            $vars["title"] = "Калькулятор";
     }
 
     return $vars;
@@ -237,6 +244,46 @@ function resize($image, $width_output = false, $height_output = false){
     imagecopyresampled($img_output, $img_input, 0, 0, 0, 0, $width_output, $height_output, $width_input, $height_input);
     $func = 'image'.$ext;
     return $func($img_output, $ouput_image_name);
+}
+
+function calc(){
+    if(isset($_POST['number1']) && isset($_POST['number2'])){
+        $number1 = (int)$_POST['number1'];
+        $number2 = (int)$_POST['number2'];
+    } else {
+        return false;
+    }
+
+    if(isset($_POST['operation'])){
+        $func = $_POST['operation'];
+    } else {
+        return false;
+    }
+
+    $result = $func($number1, $number2);
+
+    return $result;
+}
+
+function sum($number1, $number2){
+    return $number1 + $number2;
+}
+
+function diff($number1, $number2){
+    return $number1 - $number2;
+}
+
+function mult($number1, $number2){
+    return $number1 * $number2;
+}
+
+function div($number1, $number2){
+    if($number2 !== 0){
+        return $number1 / $number2;
+    }
+
+    echo "<b style='color:red'>На ноль делить нельзя</b>";
+    return false;
 }
 
 function translit($string){

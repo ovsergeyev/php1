@@ -88,3 +88,19 @@ body {
     background-color: transparent;
     border: 1px solid white;
 }
+
+.calc {
+    width: 300px;
+}
+
+.calc input {
+    width: 280px;
+    border: 1px solid #ccc;
+    outline: none;
+    padding: 5px 10px;
+    margin: 15px 0;
+}
+
+.calc input[type='submit'] {
+    width: 300px;
+}
