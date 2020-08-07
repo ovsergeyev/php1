@@ -17,4 +17,5 @@
     <li><a href="/gallery/">Галлерея</a></li>
     <li><a href="/calc/">Калькулятор</a></li>
     <li><a href="/calc2/">Калькулятор 2</a></li>
+    <li><a href="/feedback/">Отзывы</a></li>
 </ul>

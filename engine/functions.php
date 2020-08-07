@@ -114,6 +114,7 @@ function prepareVariables($page_name){
                 $vars["result"] = "Результат " . $result;
             }
             $vars["title"] = "Калькулятор";
+            break;
         case "calc2":
             $result = calc();
             $vars["result"] = " ";
@@ -121,6 +122,14 @@ function prepareVariables($page_name){
                 $vars["result"] = "Результат " . $result;
             }
             $vars["title"] = "Калькулятор2";
+            break;
+        case "feedback":
+            $vars['title'] = "Отзывы";
+            if(isset($_POST['user'])){
+                setFeedback();
+            }
+            $vars["feed"] = getFeedback();
+            break;
     }
 
     return $vars;
@@ -270,6 +279,27 @@ function calc(){
     $result = $func($number1, $number2);
 
     return $result;
+}
+
+function setFeedback(){
+    $name = prepareString($_POST['user']);
+    $body = prepareString($_POST['body']);
+    $sql = "INSERT INTO `feedback` (`feedback_user`, `feedback_body`) VALUES ('$name', '$body')";
+    executeQuery($sql);
+}
+
+function getFeedback(){
+    $sql = "SELECT `feedback_user`, `feedback_body` FROM `feedback`";
+    $result = getAssocResult($sql);
+    if(empty($result)) $result = " ";
+    return $result;
+}
+
+function prepareString($str){
+    $str = strip_tags($str);
+    $str = htmlspecialchars($str);
+    //$str = mysqli_real_escape_string($str);
+    return $str;
 }
 
 function sum($number1, $number2){
