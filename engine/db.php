@@ -27,3 +27,20 @@ function executeQuery($sql){
     mysqli_close($db);
 	return $result;
 }
+
+function getConnection(){
+    $db = mysqli_connect(HOST, USER, PASS, DB);
+    mysqli_query($db, "SET NAMES utf8");
+    return $db;
+}
+
+function getRowResult($sql, $db = null){
+    $array_result = getAssocResult($sql, $db);
+
+    if(isset($array_result[0]))
+        $result = $array_result[0];
+    else
+        $result = [];
+
+    return $result;
+}

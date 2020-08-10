@@ -15,6 +15,9 @@ define('GOODS_DIR', SITE_ROOT . 'img/goods_img');
 
 define('SITE_TITLE', 'Урок 4');
 
+define('SALT2', 'awOIHO@EN@Oine q2enq2kbkb');
+
 require_once(LIB_DIR . '/functions.php');
 require_once(LIB_DIR . '/db.php');
+require_once(LIB_DIR . '/login.php');
 ?>

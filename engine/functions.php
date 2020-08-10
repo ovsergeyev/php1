@@ -82,6 +82,11 @@ function prepareVariables($page_name){
     switch ($page_name){
         case "index":
             $vars["title"] = "Главная";
+            $vars["greeting"] = " ";
+            if(isset($_SESSION["user"])){
+                $user_name = $_SESSION["user"]["user_name"];
+                $vars["greeting"] = "Привет $user_name. Вы успешно залогинились.";
+            }
             break;
         case "gallery":
             load_img('./img/slides/');
@@ -136,6 +141,42 @@ function prepareVariables($page_name){
             }
             $vars["title"] = "Каталог товаров";
             $vars["catalog"] = getGoods();
+            break;
+        case "registration":
+            $vars["title"] = "Регистрация";
+            if(isset($_POST['login'])){
+                getRegister();
+            }
+            break;
+        case "login":
+            $vars["title"] = "Залогиньтесь в системе";
+            if(alreadyLoggedIn()){
+                header("Location: /");
+            }
+
+            if(checkAuthWithCookie()){
+                header("Location: /");
+            }
+            else {
+                $vars["autherror"] = " ";
+                if($_SERVER["REQUEST_METHOD"] == "POST"){
+                    if(!authWithCredentials()){
+                        $vars["autherror"] = "Неправильный логин/пароль";
+                    } else {
+                        header("Location: /");
+                    }
+                }
+
+            }
+            break;
+        case "logout":
+            unset($_SESSION["user"]);
+            session_destroy();
+            setcookie("id_user", "", time() - 3600 * 24 * 30 * 12, "/");
+            setcookie("cookie_hash", "", time() - 3600 * 24 * 30 * 12, "/");
+            header("Location: /");
+            var_dump($_SESSION);
+            break;
     }
 
     return $vars;

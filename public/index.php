@@ -1,6 +1,8 @@
 <?php
 require_once('../config/config.php');
 
+session_start();
+
 $url_array = explode("/", $_SERVER['REQUEST_URI']);
 
 if($url_array[1] == "")
