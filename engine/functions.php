@@ -82,11 +82,6 @@ function prepareVariables($page_name){
     switch ($page_name){
         case "index":
             $vars["title"] = "Главная";
-            $vars["greeting"] = " ";
-            if(isset($_SESSION["user"])){
-                $user_name = $_SESSION["user"]["user_name"];
-                $vars["greeting"] = "Привет $user_name. Вы успешно залогинились.";
-            }
             break;
         case "gallery":
             load_img('./img/slides/');
@@ -159,11 +154,11 @@ function prepareVariables($page_name){
         case "login":
             $vars["title"] = "Залогиньтесь в системе";
             if(alreadyLoggedIn()){
-                header("Location: /");
+                header("Location: /user/");
             }
 
             if(checkAuthWithCookie()){
-                header("Location: /");
+                header("Location: /user/");
             }
             else {
                 $vars["autherror"] = " ";
@@ -171,7 +166,7 @@ function prepareVariables($page_name){
                     if(!authWithCredentials()){
                         $vars["autherror"] = "Неправильный логин/пароль";
                     } else {
-                        header("Location: /");
+                        header("Location: /user/");
                     }
                 }
 
@@ -198,6 +193,18 @@ function prepareVariables($page_name){
             }
 
             $vars["goods"] = getCartGoods();
+            break;
+        case "user":
+            $vars["title"] = "Личный кабинет";
+            if(!isset($_SESSION["user"])){
+                header("Location: /");
+            }
+            $vars["greeting"] = " ";
+            if(isset($_SESSION["user"])){
+                $user_name = $_SESSION["user"]["user_name"];
+                $user_login = $_SESSION["user"]["user_login"];
+                $vars["greeting"] = "Привет $user_name. Вы успешно залогинились. Ваш логин: $user_login";
+            }
             break;
     }
 

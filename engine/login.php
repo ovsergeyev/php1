@@ -16,7 +16,7 @@ function checkAuthWithCookie(){
             setcookie("id_user", "", time() - 3600 * 24 * 30 * 12, "/");
             setcookie("cookie_hash", "", time() - 3600 * 24 * 30 * 12, "/");
         } else {
-            header("Location: /");
+            header("Location: /user/");
         }
 
         return result;
@@ -29,7 +29,7 @@ function authWithCredentials(){
 
     $link = getConnection();
 
-    $sql = "SELECT id_user, user_name, user_password FROM user WHERE user_login = '" . mysqli_real_escape_string($link, $username) . "'";
+    $sql = "SELECT id_user, user_name, user_login, user_password FROM user WHERE user_login = '" . mysqli_real_escape_string($link, $username) . "'";
     $user_data = getRowResult($sql, $link);
 
     $isAuth = 0;
