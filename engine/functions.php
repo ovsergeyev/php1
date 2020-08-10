@@ -139,6 +139,14 @@ function prepareVariables($page_name){
             if(isset($_POST['name'])){
                 addGoods();
             }
+            if(isset($_GET['add'])){
+                $id = (int)$_GET['add'];
+                addToCart($id);
+            }
+            if(isset($_GET['del'])){
+                $id = (int)$_GET['del'];
+                delToCart($id);
+            }
             $vars["title"] = "Каталог товаров";
             $vars["catalog"] = getGoods();
             break;
@@ -176,6 +184,20 @@ function prepareVariables($page_name){
             setcookie("cookie_hash", "", time() - 3600 * 24 * 30 * 12, "/");
             header("Location: /");
             var_dump($_SESSION);
+            break;
+        case "cart":
+            $vars["title"] = "Корзина товаров";
+
+            if(isset($_GET['add'])){
+                $id = (int)$_GET['add'];
+                addToCart($id);
+            }
+            if(isset($_GET['del'])){
+                $id = (int)$_GET['del'];
+                delToCart($id);
+            }
+
+            $vars["goods"] = getCartGoods();
             break;
     }
 
@@ -356,13 +378,23 @@ function addGoods(){
 
 function getGoods(){
     $result = "";
-    $sql = "SELECT `img_name`, `name`, `description`, `price` FROM `goods`";
+    $sql = "SELECT `id_good`, `img_name`, `name`, `description`, `price` FROM `goods`";
     $request = getAssocResult($sql);
+
     forEach($request as $item){
         $img_path = GOODS_DIR . '/' . $item['img_name'];
+        $id = (int)$item['id_good'];
         $name = $item['name'];
         $desc = $item['description'];
         $price = $item['price'];
+        $quantity = 0;
+        if(isset($_SESSION["cart"])){
+            foreach($_SESSION["cart"] as $item){
+                if($item["id_product"] === $id){
+                    $quantity = $item['quantity'];
+                }
+            }
+        }
 
         $str = "<div class='goods__item'>
                     <h2>$name</h2>
@@ -373,10 +405,107 @@ function getGoods(){
                     <p>$desc</p>
                     <h3>Цена:</h3>
                     <p>$price рублей</p>
+                    <p>В корзине $quantity шт.</p>
+                    <p><a href='/goods/?add=$id'>Добавить в корзину</a></p>
+                    <p><a href='/goods/?del=$id'>Удалить из корзины</a></p>
                 </div>";
         $result .= $str;
     }
     return $result;
+}
+
+function getCartGoods(){
+    $result = '<div class="goods">';
+    $amount = 0;
+    if(isset($_SESSION["cart"])){
+        foreach($_SESSION["cart"] as $item){
+            $id = $item["id_product"];
+            $quantity = $item["quantity"];
+            $sql = "SELECT `img_name`, `name`, `description`, `price` FROM `goods` WHERE id_good=$id";
+            $request = getAssocResult($sql);
+            $name = $request[0]['name'];
+            $desc = $request[0]['description'];
+            $price = $request[0]['price'];
+            $img_path = GOODS_DIR . '/' . $request[0]['img_name'];
+            $amount+=$quantity * $price;
+
+            $str = "<div class='goods__item'>
+                    <h2>$name</h2>
+                    <div class='goods__img'>
+                        <img src='$img_path' alt='$name'>
+                    </div>
+                    <h3>Описание:</h3>
+                    <p>$desc</p>
+                    <h3>Цена:</h3>
+                    <p>$price рублей</p>
+                    <p>В корзине $quantity шт.</p>
+                    <p><a href='/cart/?add=$id'>Добавить в корзину</a></p>
+                    <p><a href='/cart/?del=$id'>Удалить из корзины</a></p>
+                </div>";
+            $result .= $str;
+        }
+    }
+    $result .= "</div>";
+    if($amount > 0){
+        $result .= "<h3>Выбрано товаров на сумму $amount рублей</h3>";
+    }
+    return $result;
+}
+
+function addToCart($id){
+    if(!isset($_SESSION["cart"])){
+        $_SESSION["cart"] = [];
+    }
+
+    $result_array = [];
+    $added = 0;
+
+    foreach($_SESSION["cart"] as $item){
+        if($item["id_product"] == $id){
+            array_push($result_array, [
+                "id_product" => $id,
+                "quantity" => $item["quantity"] + 1
+            ]);
+            $added = 1;
+        } else {
+            array_push($result_array, $item);
+        }
+    }
+
+    if(!$added){
+        array_push($result_array, [
+            "id_product" => $id,
+            "quantity" => 1
+        ]);
+        $added = 1;
+    }
+
+    $_SESSION["cart"] = $result_array;
+
+    return $added;
+}
+
+function delToCart($id){
+    $del = 0;
+    if(isset($_SESSION["cart"])){
+        $result_array = [];
+        foreach($_SESSION["cart"] as $item){
+            if($item["id_product"] == $id){
+                if($item["quantity"] > 1){
+                    array_push($result_array, [
+                        "id_product" => $id,
+                        "quantity" => $item["quantity"] - 1
+                    ]);
+                }
+                $del = 1;
+                continue;
+            } else {
+                array_push($result_array, $item);
+            }
+        }
+        $_SESSION["cart"] = $result_array;
+    }
+    return $del;
 }
 
 function prepareString($str){

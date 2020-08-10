@@ -19,6 +19,7 @@
     <li><a href="/calc2/">Калькулятор 2</a></li>
     <li><a href="/feedback/">Отзывы</a></li>
     <li><a href="/goods/">Каталог товаров</a></li>
+    <li><a href="/cart/">Корзина</a></li>
     <li><a href="/registration/">Регистрация</a></li>
     <li><a href="/login/">Залогинивание</a></li>
     <li><a href="/logout/">Разлогинивание</a></li>
